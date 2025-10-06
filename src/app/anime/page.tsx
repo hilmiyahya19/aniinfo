@@ -1,6 +1,7 @@
 import { getAnimeList } from '@/lib/jikan'
 import AnimeCard from '@/components/AnimeCard'
 import Pagination from '@/components/Pagination'
+import { Anime } from '@/types/anime'
 
 export default async function AnimeListPage({
   searchParams,
@@ -10,7 +11,7 @@ export default async function AnimeListPage({
   // Ambil page dari query (default: 1)
   const page = Number(searchParams.page) || 1
   // 🔧 Kirim page ke fungsi fetch
-  const animeList = await getAnimeList(page)
+  const animeList: Anime[] = await getAnimeList(page)
 
   const hasNext = animeList.length === 24 // Asumsi ada next page kalau dapat 24 item
 
@@ -22,7 +23,7 @@ export default async function AnimeListPage({
         <p className="text-gray-400">No anime found.</p>
       ) : (
         <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {animeList.map((anime: any) => (
+          {animeList.map((anime) => (
             <AnimeCard
               key={anime.mal_id}
               id={anime.mal_id}
