@@ -1,4 +1,4 @@
-// src/lib/jikan.ts
+// Dapatkan detail anime berdasarkan ID
 const baseUrl = process.env.NEXT_PUBLIC_JIKAN_API_BASE
 
 export async function getAnimeById(id: string) {
@@ -17,7 +17,7 @@ export async function getAnimeById(id: string) {
   }
 }
 
-// src/lib/jikan.ts
+// Dapatkan daftar anime dengan pagination
 export async function getAnimeList(page: number = 1) {
   const limit = 24
 
@@ -36,7 +36,7 @@ export async function getAnimeList(page: number = 1) {
   }
 }
 
-// Cari anime berdasarkan keyword
+// Cari anime berdasarkan query
 export async function searchAnime(query: string, page: number = 1) {
   if (!query) return []
 

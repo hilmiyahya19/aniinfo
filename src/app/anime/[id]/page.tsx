@@ -1,7 +1,7 @@
 // src/app/anime/series/[id]/page.tsx
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
-import { getAnimeById } from '@/lib/jikan'
+import { getAnimeById } from '@/lib/api/animeApi'
 import BackButton from '@/components/BackButton'
 
 interface AnimeDetailPageProps {

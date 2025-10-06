@@ -1,4 +1,4 @@
-import { getAnimeList, searchAnime } from '@/lib/jikan'
+import { getAnimeList, searchAnime } from '@/lib/api/animeApi'
 import AnimeCard from '@/components/AnimeCard'
 import Pagination from '@/components/Pagination'
 import { Anime } from '@/types/anime'
