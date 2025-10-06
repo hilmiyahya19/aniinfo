@@ -36,4 +36,23 @@ export async function getAnimeList(page: number = 1) {
   }
 }
 
+// Cari anime berdasarkan keyword
+export async function searchAnime(query: string, page: number = 1) {
+  if (!query) return []
+
+  const limit = 24
+  try {
+    const res = await fetch(`${baseUrl}/anime?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`, {
+      cache: 'no-store', // selalu fetch terbaru
+    })
+    if (!res.ok) throw new Error(`Failed to search anime: ${res.status}`)
+    const data = await res.json()
+    return data.data || []
+  } catch (error) {
+    console.error('Error searching anime:', error)
+    return []
+  }
+}
+
+
 
