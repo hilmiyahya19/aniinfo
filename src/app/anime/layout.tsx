@@ -1,11 +1,15 @@
+// src/app/anime/layout.tsx
+import React from "react"
+
 export default function AnimeLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <div>
-      <div>{children}</div>
-    </div>
+    <>
+      {children}
+      {/* {modal} */}
+    </>
   )
 }

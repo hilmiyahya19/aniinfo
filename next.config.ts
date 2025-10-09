@@ -16,6 +16,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/img/**', 
       },
+      {
+        protocol: 'https',
+        hostname: 'www.skechers.id',
+        port: '',
+        pathname: '/media/**', 
+      },
     ],
   },
 };

@@ -1,3 +1,4 @@
+// src/app/anime/page.tsx
 import { getAnimeList, searchAnime } from '@/lib/api/animeApi'
 import AnimeCard from '@/components/AnimeCard'
 import Pagination from '@/components/Pagination'

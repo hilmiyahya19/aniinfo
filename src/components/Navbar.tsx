@@ -16,6 +16,7 @@ export const Navbar = () => {
   const links = [
     { href: '/', label: 'Home' },
     { href: '/anime', label: 'Anime' },
+    { href: '/product', label: 'Product' },
     { href: '/about', label: 'About' },
   ];
 
