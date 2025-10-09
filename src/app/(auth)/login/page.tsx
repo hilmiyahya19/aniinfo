@@ -1,5 +1,7 @@
 "use client"
+import { signIn } from 'next-auth/react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export default function LoginPage() {
@@ -7,27 +9,27 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const { push } = useRouter();
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError('');
     setLoading(true);
-    
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+      const form = event.target as HTMLFormElement;
+      const res = await signIn('credentials', {
+        redirect: true,            // biar langsung redirect otomatis
+        email: form.email.value,
+        password: form.password.value,
+        callbackUrl: '/dashboard',
       })
-
-      if (!res.ok) throw new Error('Login gagal')
-
-      const data = await res.json()
-      console.log('Login sukses:', data)
-    } catch (err) {
-      setError((err as Error).message)
-    } finally {
-      setLoading(false)
+      if(!res?.error) {
+        push('/dashboard');
+      } else {
+        console.log(res.error);
+      }
+    } catch(err) {
+      console.log(err);
     }
 
   }

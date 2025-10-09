@@ -2,18 +2,15 @@
 import { getProductById } from "@/lib/api/productApi";
 import Image from "next/image";
 
-interface ProductDetailProps {
-  params: { slug: string };
-}
+export default async function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
 
-export default async function ProductDetailPage({ params }: ProductDetailProps) {
-  // const [_, id] = params.slug.split("--");
-  const parts = params.slug.split("--");
+  const { slug } = await params; // ✅ wajib di-await
+  const parts = slug.split("--");
   const id = parts[parts.length - 1]; // ambil bagian terakhir setelah "--"
 
   const product = await getProductById(id);
 
-  console.log("🟢 params.slug:", params.slug);
+  console.log("🟢 params.slug:", slug);
   console.log("🟢 Extracted id:", id);
 
   if (!product) {

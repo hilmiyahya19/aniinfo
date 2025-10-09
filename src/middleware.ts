@@ -1,26 +1,26 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { getToken } from 'next-auth/jwt';
 
-// ✅ Ubah nilai ini untuk simulasi login/logout
-const IS_LOGGED_IN = true // ubah ke false untuk simulasi belum login
+export async function middleware(request: NextRequest) {
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+  const { pathname } = request.nextUrl;
 
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
-
-  // 🔹 Lindungi hanya route /dashboard (atau /admin/dashboard kalau foldermu di (admin))
-  if (pathname.startsWith('/admin') || pathname.startsWith('/dashboard')) {
-    if (!IS_LOGGED_IN) {
-      // Jika belum login → redirect ke /login
-      const loginUrl = new URL('/login', request.url)
-      return NextResponse.redirect(loginUrl)
-    }
+  // 🔹 Jika belum login dan menuju dashboard → redirect ke /login
+  if (!token && (pathname.startsWith('/dashboard') || pathname.startsWith('/admin'))) {
+    const loginUrl = new URL('/login', request.url);
+    return NextResponse.redirect(loginUrl);
   }
 
-  // 🔸 Jika sudah login → lanjut
-  return NextResponse.next()
+  // 🔹 Jika SUDAH login dan menuju /login atau /register → redirect ke /dashboard
+  if (token && (pathname === '/login' || pathname === '/register')) {
+    const dashboardUrl = new URL('/dashboard', request.url);
+    return NextResponse.redirect(dashboardUrl);
+  }
+
+  return NextResponse.next();
 }
 
-// 🔹 Tentukan route yang dipantau middleware
 export const config = {
-  matcher: ['/admin/:path*', '/dashboard/:path*'],
-}
+  matcher: ['/dashboard/:path*', '/admin/:path*', '/login', '/register'],
+};
