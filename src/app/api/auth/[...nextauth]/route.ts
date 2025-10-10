@@ -1,4 +1,5 @@
 // src/app/api/auth/[...nextauth]/route.tsx
+import { Login } from "@/lib/firebase/service";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
@@ -16,15 +17,26 @@ const authOptions: NextAuthOptions = {
           password: { label: "Password", type: "password" }
         },
         async authorize(credentials) {
-          // Lakukan otentikasi di sini
           const { email, password } = credentials as { email: string; password: string };
-          // Contoh sederhana, ganti dengan logika otentikasi yang sebenarnya
-          const user: any = {id: "1", name: "Hy", email: "hy@example.com", role: "admin" };
-          if (email === "hy@example.com" && password === "12345678") {
-            return user
-          } else {
-            return null;
+
+          // Panggil fungsi login yang sudah cek password
+          const result: any = await Login({ email, password });
+
+          // Jika gagal login (email tidak ada / password salah)
+          if (!result.status) {
+            throw new Error(result.message);
           }
+
+          // Ambil data user-nya
+          const user = result.data;
+
+          // Kembalikan ke NextAuth
+          return {
+            id: user.id,
+            email: user.email,
+            fullname: user.fullname,
+            role: user.role,
+          };
         }
       })
   ],

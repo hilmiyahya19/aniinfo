@@ -2,11 +2,11 @@
 export default function DashboardLayout({
   overview,
   anime,
-  settings,
+  setting,
 }: {
   overview: React.ReactNode
   anime: React.ReactNode
-  settings: React.ReactNode
+  setting: React.ReactNode
 }) {
   return (
     <main
@@ -47,7 +47,7 @@ export default function DashboardLayout({
           order-3
         "
       >
-        {settings}
+        {setting}
       </section>
     </main>
   )

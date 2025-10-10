@@ -1,3 +1,4 @@
+// src/app/(auth)/login/page.tsx
 "use client"
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
@@ -8,29 +9,34 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const { push } = useRouter();
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError('');
-    setLoading(true);
+    setIsLoading(true);
     try {
       const form = event.target as HTMLFormElement;
       const res = await signIn('credentials', {
-        redirect: true,            // biar langsung redirect otomatis
+        redirect: false, // ❌ Jangan redirect otomatis
         email: form.email.value,
         password: form.password.value,
         callbackUrl: '/dashboard',
-      })
-      if(!res?.error) {
-        push('/dashboard');
-      } else {
-        console.log(res.error);
-      }
-    } catch(err) {
-      console.log(err);
+      });
+      if (res?.error) {
+        setIsLoading(false);
+        setError('Invalid email or password');
+    } else {
+      setIsLoading(false);
+      push(res?.url || '/dashboard');
     }
+  } catch (err) {
+    console.error(err);
+    setError('Terjadi kesalahan, coba lagi.');
+  } finally {
+    setIsLoading(false);
+  }
 
   }
 
@@ -104,14 +110,18 @@ export default function LoginPage() {
                   Forgot password?
                 </Link>
               </div>
+              {error && (
+                <div className="p-3 text-sm text-red-700 bg-red-100 rounded-lg border border-red-300 dark:bg-red-900 dark:text-red-200">
+                ⚠️ {error}
+                </div>
+              )}
               <button
                 type="submit"
-                disabled={loading}
+                disabled={isLoading}
                 className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 cursor-pointer"
               >
-                {loading ? 'Loading...' : 'Login'}
+                {isLoading ? 'Loading...' : 'Login'}
               </button>
-              {error && <p className="text-red-500">{error}</p>}
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                 Don’t have an account yet?{' '}
                 <Link

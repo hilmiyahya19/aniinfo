@@ -1,8 +1,9 @@
+// src/components/Navbar.tsx
 'use client'
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import { HiMenu, HiX } from 'react-icons/hi' // Icon hamburger dan close
 import { signIn, signOut, useSession } from 'next-auth/react'
@@ -10,7 +11,7 @@ import { signIn, signOut, useSession } from 'next-auth/react'
 export const Navbar = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false); // state untuk hamburger
-  const {status}: {status: string} = useSession();
+  const { data: session, status } = useSession();
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -89,12 +90,12 @@ export const Navbar = () => {
             </li>
           ))}
           { status === "authenticated" ? (
-            <button
-            className="bg-gray-600 hover:bg-gray-500 text-white px-4 py-1 rounded-md cursor-pointer"
-            onClick={() => { signOut({ callbackUrl: '/login' }); setIsOpen(false); }}
-          >
-            Logout
-          </button>
+              <button
+              className="bg-gray-600 hover:bg-gray-500 text-white px-4 py-1 rounded-md cursor-pointer"
+              onClick={() => { signOut({ callbackUrl: '/login' }); setIsOpen(false); }}
+              >
+                Logout
+              </button>
           ) : (
              <button
             className="bg-gray-600 hover:bg-gray-500 text-white px-4 py-1 rounded-md cursor-pointer"

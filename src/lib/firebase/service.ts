@@ -39,3 +39,20 @@ export async function register(
     }
   }
 }
+
+export async function Login(data: { email: string; password: string }) {
+  const q = query(collection(firestore, "users"), where ("email", "==", data.email));
+  const snapshot = await getDocs(q);
+  const users = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+  if (users.length > 0) {
+    const passwordMatch = await bcrypt.compare(data.password, users[0].password);
+    if (passwordMatch) {
+      return { status: true, statusCode: 200, message: "Login successful", data: users[0] };
+    } else {
+      return { status: false, statusCode: 400, message: "Invalid password" };
+    }
+  } else {
+    return { status: false, statusCode: 400, message: "User not found" };
+  }
+}
