@@ -9,6 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "bcrypt": "^6.0.0",
     "firebase": "^12.3.0",
     "framer-motion": "^12.23.22",
     "next": "15.5.4",
