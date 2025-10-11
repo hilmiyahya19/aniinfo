@@ -31,6 +31,11 @@ export const Navbar = () => {
     >
       <div className="container mx-auto flex justify-between items-center p-4">
         <h1 className="text-xl font-bold text-blue-400">AniInfo</h1>
+        {status === "authenticated" && (
+          <span className="text-gray-300 mr-3">
+            Hi, {session?.user?.fullname || session?.user?.name || "User"} 👋
+          </span>
+        )}
 
         {/* Desktop Menu */}
         <ul className="hidden sm:flex gap-6 items-center">

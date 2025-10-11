@@ -2,6 +2,11 @@
 import dynamic from "next/dynamic";
 import { fetchTopAnime } from "@/lib/api/animeApi";
 
+interface Anime {
+  title: string;
+  score?: number;
+}
+
 // Client Component (diload secara dinamis)
 const AnimeChart = dynamic(() => import("@/components/AnimeChart"));
 
@@ -9,7 +14,7 @@ export default async function ChartPage() {
   const animeData = await fetchTopAnime();
 
   // Format data untuk chart
-  const chartData = animeData.map((anime: any) => ({
+  const chartData = animeData.map((anime: Anime) => ({
     title: anime.title,
     score: anime.score || 0,
   }));

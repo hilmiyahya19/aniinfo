@@ -7,7 +7,8 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 
 export default function ProfilePage() {
-  const { data: session }: { data: any } = useSession();
+  // TypeScript sekarang otomatis tahu tipe session dari deklarasi kamu di next-auth.d.ts
+  const { data: session } = useSession();
   const router = useRouter();
   const user = session?.user || {};
 
