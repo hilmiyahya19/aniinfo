@@ -4,9 +4,11 @@ import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 // import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function ProfilePage() {
   const { data: session }: { data: any } = useSession();
+  const router = useRouter();
   const user = session?.user || {};
 
   const [fullname, setFullname] = useState(user.fullname || '');
@@ -46,6 +48,18 @@ export default function ProfilePage() {
         </div>
       </div>
 
+      {/* Tombol ke Dashboard (hanya jika role = admin) */}
+      {user.role === 'admin' && (
+        <div className="flex justify-center md:justify-end mb-4">
+          <button
+            onClick={() => router.push('/dashboard')}
+            className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition cursor-pointer"
+          >
+            Menuju Dashboard
+          </button>
+        </div>
+      )}
+      
       {/* Tombol Edit */}
       {!isEditing ? (
         <div className="flex justify-center md:justify-end">
