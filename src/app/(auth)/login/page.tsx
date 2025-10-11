@@ -1,6 +1,7 @@
 // src/app/(auth)/login/page.tsx
 "use client"
 import { signIn } from 'next-auth/react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -22,14 +23,14 @@ export default function LoginPage() {
         redirect: false, // ❌ Jangan redirect otomatis
         email: form.email.value,
         password: form.password.value,
-        callbackUrl: '/dashboard',
+        callbackUrl: '/profile',
       });
       if (res?.error) {
         setIsLoading(false);
         setError('Invalid email or password');
     } else {
       setIsLoading(false);
-      push(res?.url || '/dashboard');
+      push(res?.url || '/profile');
     }
   } catch (err) {
     console.error(err);
@@ -37,8 +38,17 @@ export default function LoginPage() {
   } finally {
     setIsLoading(false);
   }
-
   }
+
+  // 🔹 Tambahkan fungsi untuk login via Google
+  const handleGoogleLogin = async () => {
+    try {
+      await signIn('google', { callbackUrl: '/profile', redirect: false });
+    } catch (err) {
+      console.error('Google login error:', err);
+      setError('Gagal login dengan Google');
+    }
+  };
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center">
@@ -121,6 +131,21 @@ export default function LoginPage() {
                 className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 cursor-pointer"
               >
                 {isLoading ? 'Loading...' : 'Login'}
+              </button>
+              {/* 🔹 Tambahkan tombol login dengan Google */}
+              <button
+                type="button"
+                onClick={handleGoogleLogin}
+                className="w-full flex items-center justify-center gap-2 mt-3 border border-gray-300 text-gray-700 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600 dark:focus:ring-gray-600 transition cursor-pointer"
+              >
+                <Image
+                  src="https://www.svgrepo.com/show/475656/google-color.svg"
+                  alt="Google"
+                  width={20}
+                  height={20}
+                  className="w-5 h-5"
+                />
+                Login with Google
               </button>
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                 Don’t have an account yet?{' '}
