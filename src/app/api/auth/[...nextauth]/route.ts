@@ -1,9 +1,9 @@
 // src/app/api/auth/[...nextauth]/route.ts
-import { Login } from "@/lib/firebase/service";
+import { Login, loginWithGoogle } from "@/lib/firebase/service";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import { adminAuth } from "@/lib/firebase/server";
+// import { adminAuth } from "@/lib/firebase/server";
 
 /* --------------------------------------------------------
    🔹 1. Custom Type Definitions
@@ -24,23 +24,6 @@ interface LoginResult {
   message: string;
   data?: FirebaseUser;
 }
-
-// Hasil callback login Google
-// interface GoogleLoginResult {
-//   status: boolean;
-//   data?: {
-//     email: string;
-//     fullname: string;
-//     role: string;
-//   };
-// }
-
-// Bentuk data yang dikirim untuk login Google
-// interface GoogleLoginData {
-//   fullname: string;
-//   email: string;
-//   type: "google";
-// }
 
 interface GoogleUser extends AuthUser {
   idToken?: string;
@@ -131,40 +114,37 @@ const authOptions: NextAuthOptions = {
       }
 
       // Login via Google
-      // if (account?.provider === "google" && user?.email && user?.name) {
-      //   const data: GoogleLoginData = {
-      //     fullname: user.name,
-      //     email: user.email,
-      //     type: "google",
-      //   };
-
-      //   const result: GoogleLoginResult = await new Promise<GoogleLoginResult>((resolve) => {
-      //     loginWithGoogle(data, (res) => resolve(res));
-      //   });
-
-      //   if (result.status && result.data) {
-      //     token.email = result.data.email;
-      //     token.fullname = result.data.fullname;
-      //     token.role = result.data.role;
-      //   }
-      // }
-
-      // Login via Google
       if (account?.provider === "google" && user?.email && user?.name) {
         const googleUser = user as GoogleUser;
-        const idToken = googleUser.idToken; // token dari Google OAuth
-        if (idToken) {
-          try {
-            // Verifikasi token Google via Firebase Admin
-            const decoded = await adminAuth.verifyIdToken(idToken);
-            // decoded.uid, decoded.email, dll tersedia
-            token.email = decoded.email;
-            token.fullname = googleUser.name;
-            token.role = "member"; // atau ambil dari Firestore
-          } catch (err) {
-            console.error("Firebase Admin token verification failed:", err);
-          }
-        }
+
+        // const idToken = googleUser.idToken; // token dari Google OAuth
+        // if (idToken) {
+        //   try {
+        //     // Verifikasi token Google via Firebase Admin
+        //     const decoded = await adminAuth.verifyIdToken(idToken);
+        //     // decoded.uid, decoded.email, dll tersedia
+        //     token.email = decoded.email;
+        //     token.fullname = googleUser.name;
+        //     token.role = "member"; // atau ambil dari Firestore
+        //   } catch (err) {
+        //     console.error("Firebase Admin token verification failed:", err);
+        //   }
+        // }
+
+        await new Promise<void>((resolve) => {
+          loginWithGoogle(
+            { email: googleUser.email, fullname: googleUser.name, type: "google" },
+            (result) => {
+              if (result.status && result.data) {
+                const u = result.data;
+                token.email = u.email;
+                token.fullname = u.fullname;
+                token.role = u.role; // ambil role dari Firestore
+              }
+              resolve();
+            }
+          );
+        });
       }
 
       return token;
