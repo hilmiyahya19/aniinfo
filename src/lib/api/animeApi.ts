@@ -54,5 +54,21 @@ export async function searchAnime(query: string, page: number = 1) {
   }
 }
 
+// Dapatkan daftar top 10 anime
+export async function fetchTopAnime() {
+  try {
+    const response = await fetch("https://api.jikan.moe/v4/top/anime?limit=10", {
+      next: { revalidate: 3600 }, // cache selama 1 jam
+    });
 
+    if (!response.ok) {
+      throw new Error("Gagal mengambil data dari Jikan API");
+    }
 
+    const data = await response.json();
+    return data.data; // hasil array daftar anime
+  } catch (error) {
+    console.error("Error fetchTopAnime:", error);
+    return [];
+  }
+}

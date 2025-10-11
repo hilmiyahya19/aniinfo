@@ -2,11 +2,11 @@
 export default function DashboardLayout({
   overview,
   anime,
-  setting,
+  chart,
 }: {
   overview: React.ReactNode
   anime: React.ReactNode
-  setting: React.ReactNode
+  chart: React.ReactNode
 }) {
   return (
     <main
@@ -39,7 +39,7 @@ export default function DashboardLayout({
         {anime}
       </section>
 
-      {/* Settings - bawah kiri di layar besar, urutan ketiga di layar kecil */}
+      {/* charts - bawah kiri di layar besar, urutan ketiga di layar kecil */}
       <section
         className="
           bg-gray-900 p-6 rounded-2xl shadow-lg
@@ -47,7 +47,7 @@ export default function DashboardLayout({
           order-3
         "
       >
-        {setting}
+        {chart}
       </section>
     </main>
   )
